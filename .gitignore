@@ -1,0 +1,5 @@
+env_e
+.idea
+settings.py
+bot.log
+__pycache__
