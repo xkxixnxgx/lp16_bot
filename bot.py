@@ -1,40 +1,54 @@
 # Импортируем нужные компоненты, импорт обработчика команд, обработчик текстовых сообщений
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
-
-# Настройки прокси
-PROXY = {'proxy_url': 'socks5://t1.learn.python.ru:1080','urllib3_proxy_kwargs': {'username': 'learn', 'password': 'python'}}
-
+import settings
 # Будем записывать отчет о работе бота
 import logging
 logging.basicConfig(format='%(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO,
                     filename='bot.log')
 
-# Функция, которая соединяется с платформой Telegram, "тело" нашего бота
-def main():
-    mybot = Updater("908634581:AAEZYDLx0qq4MIcbfdonViKeQgY6J3MsOpM", request_kwargs=PROXY)
-    # Команды в чате Telegram выглядят как "/команда".
-    # Научим бота реагировать на команду /start - она автоматически выполняется при подключении к боту.
-    dp = mybot.dispatcher
-    dp.add_handler(CommandHandler("start", greet_user))
-    dp.add_handler(MessageHandler(Filters.text, talk_to_me))    # Добавим новый handler в main()
-    mybot.start_polling()
-    mybot.idle()
+
+# Настройки прокси
+PROXY = {'proxy_url': settings.PROXY_URL,
+    'urllib3_proxy_kwargs': {
+        'username': settings.PROXY_USERNAME,
+        'password': settings.PROXY_PASSWORD
+    }
+}
+
 
 # Создадим функцию greet_user
 # Она будет вызываться,
 # когда пользователь в чате напишет /start вручную или подключится к боту в первый раз.
-def greet_user(bot, update):
+def greet_user(update, context):
     text = 'Привет, как дела?'
     print(text)
     update.message.reply_text(text)
 
+
 # Добавим функцию, которая будет "отвечать" пользователю
-def talk_to_me(bot, update):
+def talk_to_me(update, context):
     user_text = update.message.text
-    print(user_text)
-    update.message.reply_text(user_text)
+    ask_bot = ('Это у меня ' + user_text.lower() + '!\n' + 'А у тебя как?')
+    update.message.reply_text(ask_bot)
+
+
+# Функция, которая соединяется с платформой Telegram, "тело" нашего бота
+if __name__ == "__main__":
+    def main():
+        # для прокси
+        # mybot = Updater(settings.API_KEY, request_kwargs=PROXY)
+        mybot = Updater(settings.API_KEY, use_context=True, request_kwargs=PROXY)
+        # Команды в чате Telegram выглядят как "/команда".
+        # Научим бота реагировать на команду /start - она автоматически выполняется при подключении к боту.
+        dp = mybot.dispatcher
+        dp.add_handler(CommandHandler("start", greet_user))
+        dp.add_handler(MessageHandler(Filters.text, talk_to_me))    # Добавим новый handler в main()
+        mybot.start_polling()
+        mybot.idle()
+
 
 # Вызываем функцию - эта строчка собственно запускает бота
-main()
+    main()
+
 
