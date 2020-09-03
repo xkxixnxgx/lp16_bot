@@ -1,5 +1,5 @@
-env_e
 .idea
+__pycache__
+env_bot
 settings.py
 bot.log
-__pycache__
