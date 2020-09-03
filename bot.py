@@ -29,7 +29,7 @@ def greet_user(update, context):
 # Добавим функцию, которая будет "отвечать" пользователю
 def talk_to_me(update, context):
     user_text = update.message.text
-    ask_bot = ('Это у меня ' + user_text.lower() + '!\n' + 'А у тебя как?')
+    ask_bot = ('Это у меня ' + user_text.lower() + '!\n' + 'А у тебя как дела?')
     update.message.reply_text(ask_bot)
 
 
